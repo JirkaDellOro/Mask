@@ -17,8 +17,10 @@ declare namespace Script {
         octaves: number;
         step: number;
         constructor();
+        getTexture(): ƒ.TextureCanvas;
         protected reduceMutator(_mutator: ƒ.Mutator): void;
     }
 }
 declare namespace Script {
+    let ptg: any;
 }

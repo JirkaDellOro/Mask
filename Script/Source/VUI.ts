@@ -1,6 +1,5 @@
 namespace Script {
   import ƒ = FudgeCore;
-  import ƒUi = FudgeUserInterface;
 
   export class Texture extends ƒ.Mutable {
     public tint: ƒ.Color;
@@ -10,26 +9,30 @@ namespace Script {
     public octaves: number;
     public step: number;
 
-
     constructor() {
       super();
-      this.tint = new ƒ.Color(0, 1, 0, 10);
+      this.tint = new ƒ.Color(0, 1, 0, 1);
       this.density = 0.6;
       this.amplitude = 1;
       this.persistence = 0.5;
       this.octaves = 2;
       this.step = 1;
+    }
 
-      // this.health = 100;
-      // this.name = "Steve";
+    public getTexture(): ƒ.TextureCanvas {
+      let data = {
+        program: "cellularFractal",
+        blendMode: "add",
+        tint: [this.tint.r, this.tint.g, this.tint.b], 
+        density: this.density, 
+        amplitude: this.amplitude, 
+        persistence: this.persistence, 
+        octaves: this.octaves, 
+        step: this.octaves
+      }
+      ptg.set([data])
 
-      // let vui: HTMLDivElement = document.querySelector("div#vui");
-      // new ƒUi.Controller(this, vui);
-
-      let domUI: HTMLDivElement = ƒUi.Generator.createInterfaceFromMutable(this);
-      document.body.appendChild(domUI);
-
-      this.addEventListener(ƒ.EVENT.MUTATE, () => console.log(this));
+      return new ƒ.TextureCanvas("test", ptg.ctx);
     }
 
     protected reduceMutator(_mutator: ƒ.Mutator): void {
