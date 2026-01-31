@@ -43,29 +43,33 @@ var Script;
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
     let crcOctopus;
+    let coatOctopus;
+    let ptg;
+    let twirl = 0;
     function start(_event) {
         viewport = _event.detail;
         // create texture canvas
         let canvas = document.querySelector("canvas#texture");
         crcOctopus = canvas.getContext("2d");
-        crcOctopus.fillStyle = "blue";
-        crcOctopus.strokeStyle = "white";
-        crcOctopus.lineWidth = 10;
-        crcOctopus.fillRect(0, 0, canvas.width, canvas.height);
-        crcOctopus.moveTo(0, 0);
-        crcOctopus.lineTo(canvas.width, canvas.height);
-        crcOctopus.stroke();
         // use texture
         let texture = new ƒ.TextureCanvas("test", crcOctopus);
         let octopus = viewport.getBranch().getChildByName("Octopus");
         let cmpMaterial = octopus.getComponent(ƒ.ComponentMaterial);
-        let coat = cmpMaterial.material.coat;
-        coat.texture = texture;
-        crcOctopus.moveTo(canvas.width, 0);
-        crcOctopus.lineTo(0, canvas.height);
-        crcOctopus.stroke();
-        const tg = new PTG.ProceduralTextureGenerator(canvas);
-        tg.set([{
+        coatOctopus = cmpMaterial.material.coat;
+        ptg = new PTG.ProceduralTextureGenerator(canvas);
+        ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
+        ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+    }
+    function update(_event) {
+        // ƒ.Physics.simulate();  // if physics is included and used
+        setTwirl(twirl++);
+        if (twirl > 100)
+            twirl = 0;
+        viewport.draw();
+        ƒ.AudioManager.default.update();
+    }
+    function setTwirl(_strength) {
+        ptg.set([{
                 program: 'sinX',
                 blendMode: 'add',
                 tint: [0, 1, 0],
@@ -81,16 +85,10 @@ var Script;
                 program: 'twirl',
                 tint: [1, 1, 1],
                 radius: 100,
-                strength: 100,
+                strength: _strength,
                 position: [128, 128]
             }]);
-        ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
-        ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
-    }
-    function update(_event) {
-        // ƒ.Physics.simulate();  // if physics is included and used
-        viewport.draw();
-        ƒ.AudioManager.default.update();
+        coatOctopus.texture = new ƒ.TextureCanvas("test", crcOctopus);
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
