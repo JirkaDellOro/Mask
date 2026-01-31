@@ -1,5 +1,7 @@
 namespace Script {
   import ƒ = FudgeCore;
+  declare const PTG: any;
+
   ƒ.Debug.info("Main Program Template running!");
 
   let viewport: ƒ.Viewport;
@@ -27,11 +29,31 @@ namespace Script {
     let cmpMaterial: ƒ.ComponentMaterial = octopus.getComponent(ƒ.ComponentMaterial);
     let coat: ƒ.CoatTextured = <ƒ.CoatTextured>cmpMaterial.material.coat;
     coat.texture = texture;
-    
+
     crcOctopus.moveTo(canvas.width, 0);
     crcOctopus.lineTo(0, canvas.height);
     crcOctopus.stroke();
 
+    const tg = new PTG.ProceduralTextureGenerator(canvas);
+    tg.set([{
+      program: 'sinX',
+      blendMode: 'add',
+      tint: [0, 1, 0],
+      frequency: 0.031,
+      offset: 0
+    }, {
+      program: 'sinY',
+      blendMode: 'multiply',
+      tint: [0, 1, 0],
+      frequency: 0.031,
+      offset: 0
+    }, {
+      program: 'twirl',
+      tint: [1, 1, 1],
+      radius: 100,
+      strength: 100,
+      position: [128, 128]
+    }]);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
