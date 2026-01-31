@@ -8,8 +8,14 @@ namespace Script {
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
 
+    let canvas: HTMLCanvasElement = document.querySelector("canvas#texture")!;
+    let crc2: CanvasRenderingContext2D = canvas.getContext("2d")!;
+    crc2.fillStyle = "red";
+    crc2.fillRect(0, 0, canvas.width, canvas.height);
+    // let texture: ƒ.TextureCanvas = new ƒ.TextureCanvas("test", crc2);
+
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
-    // ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+    ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
   }
 
   function update(_event: Event): void {
