@@ -1,4 +1,23 @@
 {
+  "MeshQuad|2026-01-31T10:31:19.345Z|92768": {
+    "ƒ.MeshQuad": {
+      "idResource": "MeshQuad|2026-01-31T10:31:19.345Z|92768",
+      "name": "Quad"
+    }
+  },
+  "Material|2026-01-31T10:32:00.473Z|39197": {
+    "ƒ.Material": {
+      "name": "ShaderLit",
+      "idResource": "Material|2026-01-31T10:32:00.473Z|39197",
+      "shader": "ShaderLit",
+      "coat": {
+        "ƒ.CoatColored": {
+          "alphaClip": 0.01,
+          "color": "[1, 1, 1, 1]"
+        }
+      }
+    }
+  },
   "Graph|2026-01-31T10:31:11.864Z|35311": {
     "ƒ.Graph": {
       "name": "Scene",
@@ -71,7 +90,7 @@
                 {
                   "ƒ.ComponentMaterial": {
                     "sortForAlpha": false,
-                    "clrPrimary": "[0.9647058823529412, 0.01568627450980392, 0.01568627450980392, 1]",
+                    "clrPrimary": "[1, 1, 1, 1]",
                     "clrSecondary": "[1, 1, 1, 1]",
                     "pivot": {
                       "translation": "[0, 0]",
@@ -81,7 +100,7 @@
                     "Component": {
                       "active": true
                     },
-                    "idMaterial": "Material|2026-01-31T10:32:00.473Z|39197"
+                    "idMaterial": "Material|2026-01-31T11:01:11.330Z|89266"
                   }
                 }
               ],
@@ -108,19 +127,13 @@
       "type": "Graph"
     }
   },
-  "MeshQuad|2026-01-31T10:31:19.345Z|92768": {
-    "ƒ.MeshQuad": {
-      "idResource": "MeshQuad|2026-01-31T10:31:19.345Z|92768",
-      "name": "Quad"
-    }
-  },
-  "Material|2026-01-31T10:32:00.473Z|39197": {
+  "Material|2026-01-31T11:01:11.330Z|89266": {
     "ƒ.Material": {
-      "name": "ShaderLit",
-      "idResource": "Material|2026-01-31T10:32:00.473Z|39197",
-      "shader": "ShaderLit",
+      "name": "ShaderLitTextured",
+      "idResource": "Material|2026-01-31T11:01:11.330Z|89266",
+      "shader": "ShaderLitTextured",
       "coat": {
-        "ƒ.CoatColored": {
+        "ƒ.CoatTextured": {
           "alphaClip": 0.01,
           "color": "[1, 1, 1, 1]"
         }
