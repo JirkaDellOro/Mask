@@ -18,6 +18,19 @@
       }
     }
   },
+  "Material|2026-01-31T11:01:11.330Z|89266": {
+    "ƒ.Material": {
+      "name": "ShaderLitTextured",
+      "idResource": "Material|2026-01-31T11:01:11.330Z|89266",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "alphaClip": 0.01,
+          "color": "[1, 1, 1, 1]"
+        }
+      }
+    }
+  },
   "Graph|2026-01-31T10:31:11.864Z|35311": {
     "ƒ.Graph": {
       "name": "Scene",
@@ -74,11 +87,11 @@
               "ComponentMesh": [
                 {
                   "ƒ.ComponentMesh": {
-                    "idMesh": "MeshQuad|2026-01-31T10:31:19.345Z|92768",
+                    "idMesh": "MeshSphere|2026-01-31T15:38:22.193Z|08673",
                     "pivot": {
-                      "translation": "[0, 0, 0.1]",
+                      "translation": "[0, 0, 0]",
                       "rotation": "[0, 0, 0]",
-                      "scaling": "[0.5000000000000001, 0.5000000000000001, 1]"
+                      "scaling": "[0.7000000000000001, 0.7000000000000001, 0.050000000000000155]"
                     },
                     "Component": {
                       "active": true
@@ -127,17 +140,13 @@
       "type": "Graph"
     }
   },
-  "Material|2026-01-31T11:01:11.330Z|89266": {
-    "ƒ.Material": {
-      "name": "ShaderLitTextured",
-      "idResource": "Material|2026-01-31T11:01:11.330Z|89266",
-      "shader": "ShaderLitTextured",
-      "coat": {
-        "ƒ.CoatTextured": {
-          "alphaClip": 0.01,
-          "color": "[1, 1, 1, 1]"
-        }
-      }
+  "MeshSphere|2026-01-31T15:38:22.193Z|08673": {
+    "ƒ.MeshSphere": {
+      "idResource": "MeshSphere|2026-01-31T15:38:22.193Z|08673",
+      "name": "Sphere",
+      "type": "MeshSphere",
+      "longitudes": 8,
+      "latitudes": 8
     }
   }
 }

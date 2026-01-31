@@ -1,4 +1,4 @@
-/// <reference path="VUI.ts"/>;
+/// <reference path="Texture.ts"/>;
 namespace Script {
   import ƒ = FudgeCore;
   import ƒUi = FudgeUserInterface;
@@ -12,6 +12,7 @@ namespace Script {
   export let ptg: any;
   let coatOctopus: ƒ.CoatTextured;
   let txtOctopus: Texture = new Texture();
+  // let controller: ƒUi.Controller;
 
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
@@ -26,18 +27,26 @@ namespace Script {
 
     ptg = new PTG.ProceduralTextureGenerator(canvas);
 
+    // txtOctopus.randomize();
+    // setTexture();
+
     let domUI: HTMLDivElement = ƒUi.Generator.createInterfaceFromMutable(txtOctopus);
     document.body.appendChild(domUI);
     new ƒUi.Controller(txtOctopus, domUI);
     txtOctopus.addEventListener(ƒ.EVENT.MUTATE, setTexture);
-    setTexture();
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+
+    ƒ.Time.game.setTimer(1000, 1, () => {
+      txtOctopus.randomize();
+      setTexture();
+    });
   }
 
   function update(_event: Event): void {
     // ƒ.Physics.simulate();  // if physics is included and used
+
 
     viewport.draw();
     ƒ.AudioManager.default.update();

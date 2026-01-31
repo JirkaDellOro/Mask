@@ -10,13 +10,12 @@ declare namespace Script {
 declare namespace Script {
     import ƒ = FudgeCore;
     class Texture extends ƒ.Mutable {
+        #private;
         tint: ƒ.Color;
-        density: number;
         amplitude: number;
-        persistence: number;
         octaves: number;
-        step: number;
         constructor();
+        randomize(): void;
         getTexture(): ƒ.TextureCanvas;
         protected reduceMutator(_mutator: ƒ.Mutator): void;
     }
