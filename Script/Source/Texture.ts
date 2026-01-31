@@ -2,7 +2,6 @@ namespace Script {
   import ƒ = FudgeCore;
 
   export class Texture extends ƒ.Mutable {
-    #step: number;
     #seed: number = ƒ.random.getNorm();
     #density: number;
     #persistence: number;
@@ -17,14 +16,12 @@ namespace Script {
       this.#persistence = 0.5;
       this.octaves = 2;
       this.#density = 0.6;
-      this.#step = 1;
     }
 
     public randomize(): void {
       this.tint = ƒ.Color.CSS(`hsl(${ƒ.random.getRangeFloored(0, 360)}, 80%, 60%)`);
       this.#seed = ƒ.random.getNorm();
       this.#density = 0.5;// ƒ.random.getNorm();
-      this.#step = 1;
       this.amplitude = ƒ.random.getRange(0.5, 2);
       this.#persistence = 1;//ƒ.random.getRange(0, 1);
       this.octaves = ƒ.random.getRangeFloored(1, 5);

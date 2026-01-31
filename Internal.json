@@ -31,6 +31,15 @@
       }
     }
   },
+  "MeshSphere|2026-01-31T15:38:22.193Z|08673": {
+    "ƒ.MeshSphere": {
+      "idResource": "MeshSphere|2026-01-31T15:38:22.193Z|08673",
+      "name": "Sphere",
+      "type": "MeshSphere",
+      "longitudes": 8,
+      "latitudes": 8
+    }
+  },
   "Graph|2026-01-31T10:31:11.864Z|35311": {
     "ƒ.Graph": {
       "name": "Scene",
@@ -38,45 +47,9 @@
       "components": {},
       "children": [
         {
-          "ƒ.Node": {
-            "name": "Floor",
-            "active": true,
-            "components": {
-              "ComponentMesh": [
-                {
-                  "ƒ.ComponentMesh": {
-                    "idMesh": "MeshQuad|2026-01-31T10:31:19.345Z|92768",
-                    "pivot": {
-                      "translation": "[0, 0, 0]",
-                      "rotation": "[0, 0, 0]",
-                      "scaling": "[1, 1, 1]"
-                    },
-                    "Component": {
-                      "active": true
-                    }
-                  }
-                }
-              ],
-              "ComponentMaterial": [
-                {
-                  "ƒ.ComponentMaterial": {
-                    "sortForAlpha": false,
-                    "clrPrimary": "[0.792156862745098, 0.6235294117647059, 0.38823529411764707, 1]",
-                    "clrSecondary": "[1, 1, 1, 1]",
-                    "pivot": {
-                      "translation": "[0, 0]",
-                      "rotation": 0,
-                      "scaling": "[1, 1]"
-                    },
-                    "Component": {
-                      "active": true
-                    },
-                    "idMaterial": "Material|2026-01-31T10:32:00.473Z|39197"
-                  }
-                }
-              ]
-            },
-            "children": []
+          "ƒ.GraphInstance": {
+            "deserializeFromSource": true,
+            "idSource": "Graph|2026-01-31T21:14:21.454Z|36794"
           }
         },
         {
@@ -140,13 +113,48 @@
       "type": "Graph"
     }
   },
-  "MeshSphere|2026-01-31T15:38:22.193Z|08673": {
-    "ƒ.MeshSphere": {
-      "idResource": "MeshSphere|2026-01-31T15:38:22.193Z|08673",
-      "name": "Sphere",
-      "type": "MeshSphere",
-      "longitudes": 8,
-      "latitudes": 8
+  "Graph|2026-01-31T21:14:21.454Z|36794": {
+    "ƒ.Graph": {
+      "name": "Tile",
+      "active": true,
+      "components": {
+        "ComponentMesh": [
+          {
+            "ƒ.ComponentMesh": {
+              "idMesh": "MeshQuad|2026-01-31T10:31:19.345Z|92768",
+              "pivot": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ],
+        "ComponentMaterial": [
+          {
+            "ƒ.ComponentMaterial": {
+              "sortForAlpha": false,
+              "clrPrimary": "[1, 1, 1, 1]",
+              "clrSecondary": "[1, 1, 1, 1]",
+              "pivot": {
+                "translation": "[0, 0]",
+                "rotation": 0,
+                "scaling": "[1, 1]"
+              },
+              "Component": {
+                "active": true
+              },
+              "idMaterial": "Material|2026-01-31T11:01:11.330Z|89266"
+            }
+          }
+        ]
+      },
+      "children": [],
+      "idResource": "Graph|2026-01-31T21:14:21.454Z|36794",
+      "type": "Graph"
     }
   }
 }

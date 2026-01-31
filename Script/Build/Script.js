@@ -40,7 +40,6 @@ var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     class Texture extends ƒ.Mutable {
-        #step;
         #seed = ƒ.random.getNorm();
         #density;
         #persistence;
@@ -51,13 +50,11 @@ var Script;
             this.#persistence = 0.5;
             this.octaves = 2;
             this.#density = 0.6;
-            this.#step = 1;
         }
         randomize() {
             this.tint = ƒ.Color.CSS(`hsl(${ƒ.random.getRangeFloored(0, 360)}, 80%, 60%)`);
             this.#seed = ƒ.random.getNorm();
             this.#density = 0.5; // ƒ.random.getNorm();
-            this.#step = 1;
             this.amplitude = ƒ.random.getRange(0.5, 2);
             this.#persistence = 1; //ƒ.random.getRange(0, 1);
             this.octaves = ƒ.random.getRangeFloored(1, 5);
@@ -82,9 +79,22 @@ var Script;
     }
     Script.Texture = Texture;
 })(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
+    class Tile extends ƒ.GraphInstance {
+        constructor() {
+            super(Script.graphTile);
+            this.reset();
+        }
+    }
+    Script.Tile = Tile;
+})(Script || (Script = {}));
 /// <reference path="Texture.ts"/>;
+/// <reference path="Tile.ts"/>;
 var Script;
 /// <reference path="Texture.ts"/>;
+/// <reference path="Tile.ts"/>;
 (function (Script) {
     var ƒ = FudgeCore;
     var ƒUi = FudgeUserInterface;
@@ -93,9 +103,12 @@ var Script;
     document.addEventListener("interactiveViewportStarted", start);
     let coatOctopus;
     let txtOctopus = new Script.Texture();
-    // let controller: ƒUi.Controller;
     function start(_event) {
         viewport = _event.detail;
+        Script.graphTile = ƒ.Project.getResourcesByName("Tile")[0];
+        console.log(Script.graphTile);
+        // viewport.getBranch().getChildByName("Tile");
+        let tile = new Script.Tile();
         let canvas = document.createElement("canvas");
         canvas.width = 256;
         canvas.height = 256;
@@ -103,8 +116,6 @@ var Script;
         let cmpMaterial = octopus.getComponent(ƒ.ComponentMaterial);
         coatOctopus = cmpMaterial.material.coat;
         Script.ptg = new PTG.ProceduralTextureGenerator(canvas);
-        // txtOctopus.randomize();
-        // setTexture();
         let domUI = ƒUi.Generator.createInterfaceFromMutable(txtOctopus);
         document.body.appendChild(domUI);
         new ƒUi.Controller(txtOctopus, domUI);

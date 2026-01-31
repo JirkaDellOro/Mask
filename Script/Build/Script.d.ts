@@ -21,5 +21,13 @@ declare namespace Script {
     }
 }
 declare namespace Script {
+    import ƒ = FudgeCore;
+    class Tile extends ƒ.GraphInstance {
+        constructor();
+    }
+}
+declare namespace Script {
+    import ƒ = FudgeCore;
     let ptg: any;
+    let graphTile: ƒ.Graph;
 }

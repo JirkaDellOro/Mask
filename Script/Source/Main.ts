@@ -1,4 +1,5 @@
 /// <reference path="Texture.ts"/>;
+/// <reference path="Tile.ts"/>;
 namespace Script {
   import ƒ = FudgeCore;
   import ƒUi = FudgeUserInterface;
@@ -10,12 +11,18 @@ namespace Script {
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
   export let ptg: any;
+  export let graphTile: ƒ.Graph;
   let coatOctopus: ƒ.CoatTextured;
   let txtOctopus: Texture = new Texture();
-  // let controller: ƒUi.Controller;
 
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
+    graphTile = <ƒ.Graph>ƒ.Project.getResourcesByName("Tile")[0];
+    console.log(graphTile);
+
+    // viewport.getBranch().getChildByName("Tile");
+
+    let tile: Tile = new Tile();
 
     let canvas: HTMLCanvasElement = document.createElement("canvas");
     canvas.width = 256;
@@ -26,9 +33,6 @@ namespace Script {
     coatOctopus = <ƒ.CoatTextured>cmpMaterial.material.coat;
 
     ptg = new PTG.ProceduralTextureGenerator(canvas);
-
-    // txtOctopus.randomize();
-    // setTexture();
 
     let domUI: HTMLDivElement = ƒUi.Generator.createInterfaceFromMutable(txtOctopus);
     document.body.appendChild(domUI);
