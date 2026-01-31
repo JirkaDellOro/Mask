@@ -8,4 +8,17 @@ declare namespace Script {
     }
 }
 declare namespace Script {
+    import ƒ = FudgeCore;
+    class Texture extends ƒ.Mutable {
+        tint: ƒ.Color;
+        density: number;
+        amplitude: number;
+        persistence: number;
+        octaves: number;
+        step: number;
+        constructor();
+        protected reduceMutator(_mutator: ƒ.Mutator): void;
+    }
+}
+declare namespace Script {
 }

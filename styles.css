@@ -15,9 +15,14 @@ canvas.fullscreen {
   height: 100vh; 
 }
 
-canvas#texture {
+div {
   display: inline-block;
   position: fixed;
   top:0px;
-  left:0px;
+  right:0px;
+  background-color: #ffffff80;
+}
+
+fudge-stepper {
+  display: block;
 }

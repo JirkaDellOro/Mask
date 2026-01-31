@@ -39,54 +39,77 @@ var Script;
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
+    var ƒUi = FudgeUserInterface;
+    class Texture extends ƒ.Mutable {
+        constructor() {
+            super();
+            this.tint = new ƒ.Color(0, 1, 0, 10);
+            this.density = 0.6;
+            this.amplitude = 1;
+            this.persistence = 0.5;
+            this.octaves = 2;
+            this.step = 1;
+            // this.health = 100;
+            // this.name = "Steve";
+            // let vui: HTMLDivElement = document.querySelector("div#vui");
+            // new ƒUi.Controller(this, vui);
+            let domUI = ƒUi.Generator.createInterfaceFromMutable(this);
+            document.body.appendChild(domUI);
+            this.addEventListener("mutate" /* ƒ.EVENT.MUTATE */, () => console.log(this));
+        }
+        reduceMutator(_mutator) {
+        }
+    }
+    Script.Texture = Texture;
+})(Script || (Script = {}));
+/// <reference path="VUI.ts"/>;
+var Script;
+/// <reference path="VUI.ts"/>;
+(function (Script) {
+    var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
     let crcOctopus;
     let coatOctopus;
     let ptg;
-    let twirl = 0;
+    let p1 = 0;
     function start(_event) {
         viewport = _event.detail;
         // create texture canvas
-        let canvas = document.querySelector("canvas#texture");
+        // let canvas: HTMLCanvasElement = document.querySelector("canvas#texture")!;
+        let canvas = document.createElement("canvas");
+        canvas.width = 256;
+        canvas.height = 256;
         crcOctopus = canvas.getContext("2d");
         // use texture
-        let texture = new ƒ.TextureCanvas("test", crcOctopus);
+        // let texture: ƒ.TextureCanvas = new ƒ.TextureCanvas("test", crcOctopus);
         let octopus = viewport.getBranch().getChildByName("Octopus");
         let cmpMaterial = octopus.getComponent(ƒ.ComponentMaterial);
         coatOctopus = cmpMaterial.material.coat;
         ptg = new PTG.ProceduralTextureGenerator(canvas);
+        let test = new Script.Texture();
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
-        setTwirl(twirl++);
-        if (twirl > 100)
-            twirl = 0;
+        setTexture(p1++);
+        if (p1 > 10)
+            p1 = 0;
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
-    function setTwirl(_strength) {
+    function setTexture(_p1) {
+        // ptg.set([{
+        //   program: 'sinX', blendMode: 'add', tint: [0, 1, 0], frequency: 0.031, offset: 0
+        // }, {
+        //   program: 'sinY', blendMode: 'multiply', tint: [0, 1, 0], frequency: 0.031, offset: 0
+        // }, {
+        //   program: 'twirl', tint: [1, 1, 1], radius: 100, strength: _strength, position: [128, 128]
+        // }]);
         ptg.set([{
-                program: 'sinX',
-                blendMode: 'add',
-                tint: [0, 1, 0],
-                frequency: 0.031,
-                offset: 0
-            }, {
-                program: 'sinY',
-                blendMode: 'multiply',
-                tint: [0, 1, 0],
-                frequency: 0.031,
-                offset: 0
-            }, {
-                program: 'twirl',
-                tint: [1, 1, 1],
-                radius: 100,
-                strength: _strength,
-                position: [128, 128]
+                program: "cellularFractal", blendMode: "add", tint: [0, 1, 0], density: 0.6, amplitude: 1, persistence: 0.5, octaves: 2, step: _p1
             }]);
         coatOctopus.texture = new ƒ.TextureCanvas("test", crcOctopus);
     }
