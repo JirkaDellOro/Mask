@@ -32,6 +32,7 @@ namespace Script {
 
     viewport.canvas.addEventListener("mousedown", hndMouse);
     viewport.canvas.addEventListener("mouseup", hndMouse);
+    viewport.canvas.addEventListener("wheel", hndMouse);
     // viewport.canvas.addEventListener("wheel", hndMouseWheel);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
@@ -52,12 +53,16 @@ namespace Script {
   }
 
   function hndMouse(_event: MouseEvent): void {
+    let posClient: ƒ.Vector2 = new ƒ.Vector2(_event.clientX, _event.clientY);
+    let ray: ƒ.Ray = viewport.getRayFromClient(posClient);
+    let posWorld: ƒ.Vector3 = ray.intersectPlane(ƒ.Vector3.ZERO(), ƒ.Vector3.Z());
+    let posGrid: ƒ.Vector2 = new ƒ.Vector2(Math.round(posWorld.x), Math.round(posWorld.y));
+
     switch (_event.type) {
+      case "wheel":
+        octopus.moveTo(posGrid);
+        break;
       case "mousedown":
-        let posClient: ƒ.Vector2 = new ƒ.Vector2(_event.clientX, _event.clientY);
-        let ray: ƒ.Ray = viewport.getRayFromClient(posClient);
-        let posWorld: ƒ.Vector3 = ray.intersectPlane(ƒ.Vector3.ZERO(), ƒ.Vector3.Z());
-        let posGrid: ƒ.Vector2 = new ƒ.Vector2(Math.round(posWorld.x), Math.round(posWorld.y));
         let tile: Tile = tiles[posGrid.toString()];
         console.log(tile.texture.tint, tile.texture.amplitude, tile.texture.octaves);
         octopus.stretch(posGrid);

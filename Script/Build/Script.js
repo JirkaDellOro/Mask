@@ -130,6 +130,7 @@ var Script;
         Script.octopus.texture.addEventListener("mutate" /* ƒ.EVENT.MUTATE */, Script.octopus.setTexture);
         viewport.canvas.addEventListener("mousedown", hndMouse);
         viewport.canvas.addEventListener("mouseup", hndMouse);
+        viewport.canvas.addEventListener("wheel", hndMouse);
         // viewport.canvas.addEventListener("wheel", hndMouseWheel);
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -144,12 +145,15 @@ var Script;
         ƒ.AudioManager.default.update();
     }
     function hndMouse(_event) {
+        let posClient = new ƒ.Vector2(_event.clientX, _event.clientY);
+        let ray = viewport.getRayFromClient(posClient);
+        let posWorld = ray.intersectPlane(ƒ.Vector3.ZERO(), ƒ.Vector3.Z());
+        let posGrid = new ƒ.Vector2(Math.round(posWorld.x), Math.round(posWorld.y));
         switch (_event.type) {
+            case "wheel":
+                Script.octopus.moveTo(posGrid);
+                break;
             case "mousedown":
-                let posClient = new ƒ.Vector2(_event.clientX, _event.clientY);
-                let ray = viewport.getRayFromClient(posClient);
-                let posWorld = ray.intersectPlane(ƒ.Vector3.ZERO(), ƒ.Vector3.Z());
-                let posGrid = new ƒ.Vector2(Math.round(posWorld.x), Math.round(posWorld.y));
                 let tile = tiles[posGrid.toString()];
                 console.log(tile.texture.tint, tile.texture.amplitude, tile.texture.octaves);
                 Script.octopus.stretch(posGrid);
@@ -189,6 +193,9 @@ var Script;
             this.node = _node;
             let cmpMaterial = this.node.getComponent(ƒ.ComponentMaterial);
             this.coat = cmpMaterial.material.coat;
+        }
+        moveTo(_position) {
+            this.position = _position;
         }
         stretch(_to) {
             if (!_to) {

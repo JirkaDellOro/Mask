@@ -43,6 +43,7 @@ declare namespace Script {
         coat: ƒ.CoatTextured;
         texture: Texture;
         constructor(_node: ƒ.Node);
+        moveTo(_position: ƒ.Vector2): void;
         setTexture: () => void;
         stretch(_to: ƒ.Vector2): void;
         get position(): ƒ.Vector2;

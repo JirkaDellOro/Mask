@@ -12,6 +12,10 @@ namespace Script {
       this.coat = <ƒ.CoatTextured>cmpMaterial.material.coat;
     }
 
+    public moveTo(_position: ƒ.Vector2) {
+      this.position = _position;
+    }
+
     public setTexture = (): void => {
       this.coat.texture = this.texture.getTexture(ptg);
     }
@@ -21,13 +25,13 @@ namespace Script {
         this.node.getChildByName("Tentacle").activate(false);
         return;
       }
-      
+
       let diff: ƒ.Vector2 = ƒ.Vector2.DIFFERENCE(_to, this.position);
       let geo: ƒ.Geo2 = diff.geo;
 
       if (geo.magnitude > 1.5)
         return;
-      
+
       this.node.mtxLocal.rotation = ƒ.Vector3.Z(geo.angle);
       this.node.getChildByName("Tentacle").activate(true);
     }
