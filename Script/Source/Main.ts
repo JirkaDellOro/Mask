@@ -21,7 +21,6 @@ namespace Script {
     viewport.camera.mtxPivot.translateZ(5);
     viewport.camera.mtxPivot.rotateY(180);
 
-    ptg = setupGenerator();
     setupFloor();
     octopus = new Octopus(viewport.getBranch().getChildByName("Octopus"))
 
@@ -33,7 +32,6 @@ namespace Script {
     viewport.canvas.addEventListener("mousedown", hndMouse);
     viewport.canvas.addEventListener("mouseup", hndMouse);
     viewport.canvas.addEventListener("wheel", hndMouse);
-    // viewport.canvas.addEventListener("wheel", hndMouseWheel);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -46,7 +44,6 @@ namespace Script {
 
   function update(_event: Event): void {
     // ƒ.Physics.simulate();  // if physics is included and used
-
 
     viewport.draw();
     ƒ.AudioManager.default.update();
@@ -71,13 +68,6 @@ namespace Script {
         octopus.stretch(null);
         break;
     }
-  }
-
-  export function setupGenerator(): any {
-    let canvas: HTMLCanvasElement = document.createElement("canvas");
-    canvas.width = 256;
-    canvas.height = 256;
-    return new PTG.ProceduralTextureGenerator(canvas);
   }
 
   function setupFloor(): void {

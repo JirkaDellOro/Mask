@@ -50,6 +50,13 @@ var Script;
             this.#persistence = 0.5;
             this.octaves = 2;
             this.#density = 0.6;
+            this.ptg = this.setupGenerator();
+        }
+        setupGenerator() {
+            let canvas = document.createElement("canvas");
+            canvas.width = 256;
+            canvas.height = 256;
+            return new PTG.ProceduralTextureGenerator(canvas);
         }
         randomize() {
             this.tint = ƒ.Color.CSS(`hsl(${ƒ.random.getRangeFloored(0, 360)}, 80%, 60%)`);
@@ -59,7 +66,7 @@ var Script;
             this.#persistence = 1; //ƒ.random.getRange(0, 1);
             this.#density = 0.5; // ƒ.random.getNorm();
         }
-        getTexture(_ptg) {
+        getTexture() {
             let data = {
                 program: "cellularFractal",
                 blendMode: "add",
@@ -71,13 +78,13 @@ var Script;
                 octaves: this.octaves,
                 step: this.octaves
             };
-            _ptg.set([data]);
+            this.ptg.set([data]);
             // let rim: number = 5;
             // for (let a: number=0; a<rim; a++) {
             //   _ptg.ctx.fillStyle = `rgba(255,255,255,${a/rim}`;
             //   _ptg.ctx.fillRect(a,a,ptg.ctx.canvas.width-a, _ptg.ctx.canvas.height-a);
             // }
-            return new ƒ.TextureCanvas("test", _ptg.ctx);
+            return new ƒ.TextureCanvas("test", this.ptg.ctx);
         }
         reduceMutator(_mutator) {
         }
@@ -87,16 +94,14 @@ var Script;
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
-    // declare const PTG: any;
     class Tile extends ƒ.Node {
         static { this.mesh = new ƒ.MeshQuad("mshTile"); }
         constructor(_position) {
             super("Tile");
-            this.ptg = Script.setupGenerator();
             this.addComponent(new ƒ.ComponentMesh(Tile.mesh));
             this.texture = new Script.Texture();
             this.texture.randomize();
-            let coat = new ƒ.CoatTextured(new ƒ.Color(), this.texture.getTexture(this.ptg));
+            let coat = new ƒ.CoatTextured(new ƒ.Color(), this.texture.getTexture());
             let material = new ƒ.Material("mtrTile", ƒ.ShaderLitTextured, coat);
             this.addComponent(new ƒ.ComponentMaterial(material));
             this.addComponent(new ƒ.ComponentTransform);
@@ -121,7 +126,6 @@ var Script;
         Script.graphTile = ƒ.Project.getResourcesByName("Tile")[0];
         viewport.camera.mtxPivot.translateZ(5);
         viewport.camera.mtxPivot.rotateY(180);
-        Script.ptg = setupGenerator();
         setupFloor();
         Script.octopus = new Script.Octopus(viewport.getBranch().getChildByName("Octopus"));
         let domUI = ƒUi.Generator.createInterfaceFromMutable(Script.octopus.texture);
@@ -131,7 +135,6 @@ var Script;
         viewport.canvas.addEventListener("mousedown", hndMouse);
         viewport.canvas.addEventListener("mouseup", hndMouse);
         viewport.canvas.addEventListener("wheel", hndMouse);
-        // viewport.canvas.addEventListener("wheel", hndMouseWheel);
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
         ƒ.Time.game.setTimer(1000, 1, () => {
@@ -163,13 +166,6 @@ var Script;
                 break;
         }
     }
-    function setupGenerator() {
-        let canvas = document.createElement("canvas");
-        canvas.width = 256;
-        canvas.height = 256;
-        return new PTG.ProceduralTextureGenerator(canvas);
-    }
-    Script.setupGenerator = setupGenerator;
     function setupFloor() {
         for (let y = -2; y <= 2; y++)
             for (let x = -2; x <= 2; x++) {
@@ -187,27 +183,27 @@ var Script;
     class Octopus {
         constructor(_node) {
             this.texture = new Script.Texture();
+            this.textureTentacle = new Script.Texture();
             this.setTexture = () => {
-                this.coat.texture = this.texture.getTexture(Script.ptg);
+                this.coat.texture = this.texture.getTexture();
             };
             this.node = _node;
             let cmpMaterial = this.node.getComponent(ƒ.ComponentMaterial);
             this.coat = cmpMaterial.material.coat;
+            this.tentacle = this.node.getChildByName("Tentacle");
         }
         moveTo(_position) {
             this.position = _position;
         }
         stretch(_to) {
-            if (!_to) {
-                this.node.getChildByName("Tentacle").activate(false);
+            this.tentacle.activate(_to != null);
+            if (!_to)
                 return;
-            }
             let diff = ƒ.Vector2.DIFFERENCE(_to, this.position);
             let geo = diff.geo;
             if (geo.magnitude > 1.5)
                 return;
             this.node.mtxLocal.rotation = ƒ.Vector3.Z(geo.angle);
-            this.node.getChildByName("Tentacle").activate(true);
         }
         get position() {
             return this.node.mtxLocal.translation.toVector2();
