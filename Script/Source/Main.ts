@@ -24,13 +24,12 @@ namespace Script {
     setupFloor();
     octopus = new Octopus(viewport.getBranch().getChildByName("Octopus"))
 
-    let domUI: HTMLDivElement = ƒUi.Generator.createInterfaceFromMutable(octopus.texture);
+    let domUI: HTMLDivElement = ƒUi.Generator.createInterfaceFromMutable(octopus.textureTentacle);
     document.body.appendChild(domUI);
-    new ƒUi.Controller(octopus.texture, domUI);
-    octopus.texture.addEventListener(ƒ.EVENT.MUTATE, octopus.setTexture);
+    new ƒUi.Controller(octopus.textureTentacle, domUI);
+    octopus.textureTentacle.addEventListener(ƒ.EVENT.MUTATE, octopus.setTexture);
 
     viewport.canvas.addEventListener("mousedown", hndMouse);
-    viewport.canvas.addEventListener("mouseup", hndMouse);
     viewport.canvas.addEventListener("wheel", hndMouse);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
@@ -49,7 +48,7 @@ namespace Script {
     ƒ.AudioManager.default.update();
   }
 
-  function hndMouse(_event: MouseEvent): void {
+  function hndMouse(_event: MouseEvent | WheelEvent): void {
     let posClient: ƒ.Vector2 = new ƒ.Vector2(_event.clientX, _event.clientY);
     let ray: ƒ.Ray = viewport.getRayFromClient(posClient);
     let posWorld: ƒ.Vector3 = ray.intersectPlane(ƒ.Vector3.ZERO(), ƒ.Vector3.Z());
@@ -57,15 +56,15 @@ namespace Script {
 
     switch (_event.type) {
       case "wheel":
-        octopus.moveTo(posGrid);
+        if (octopus.turn(posGrid))
+          octopus.grope(0);
+        octopus.grope((<WheelEvent>_event).deltaY);
         break;
       case "mousedown":
+        octopus.moveTo(posGrid);
+        octopus.grope(0);
         let tile: Tile = tiles[posGrid.toString()];
         console.log(tile.texture.tint, tile.texture.amplitude, tile.texture.octaves);
-        octopus.stretch(posGrid);
-        break;
-      case "mouseup":
-        octopus.stretch(null);
         break;
     }
   }

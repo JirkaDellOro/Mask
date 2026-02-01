@@ -128,12 +128,11 @@ var Script;
         viewport.camera.mtxPivot.rotateY(180);
         setupFloor();
         Script.octopus = new Script.Octopus(viewport.getBranch().getChildByName("Octopus"));
-        let domUI = ƒUi.Generator.createInterfaceFromMutable(Script.octopus.texture);
+        let domUI = ƒUi.Generator.createInterfaceFromMutable(Script.octopus.textureTentacle);
         document.body.appendChild(domUI);
-        new ƒUi.Controller(Script.octopus.texture, domUI);
-        Script.octopus.texture.addEventListener("mutate" /* ƒ.EVENT.MUTATE */, Script.octopus.setTexture);
+        new ƒUi.Controller(Script.octopus.textureTentacle, domUI);
+        Script.octopus.textureTentacle.addEventListener("mutate" /* ƒ.EVENT.MUTATE */, Script.octopus.setTexture);
         viewport.canvas.addEventListener("mousedown", hndMouse);
-        viewport.canvas.addEventListener("mouseup", hndMouse);
         viewport.canvas.addEventListener("wheel", hndMouse);
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -154,15 +153,15 @@ var Script;
         let posGrid = new ƒ.Vector2(Math.round(posWorld.x), Math.round(posWorld.y));
         switch (_event.type) {
             case "wheel":
-                Script.octopus.moveTo(posGrid);
+                if (Script.octopus.turn(posGrid))
+                    Script.octopus.grope(0);
+                Script.octopus.grope(_event.deltaY);
                 break;
             case "mousedown":
+                Script.octopus.moveTo(posGrid);
+                Script.octopus.grope(0);
                 let tile = tiles[posGrid.toString()];
                 console.log(tile.texture.tint, tile.texture.amplitude, tile.texture.octaves);
-                Script.octopus.stretch(posGrid);
-                break;
-            case "mouseup":
-                Script.octopus.stretch(null);
                 break;
         }
     }
@@ -185,25 +184,41 @@ var Script;
             this.texture = new Script.Texture();
             this.textureTentacle = new Script.Texture();
             this.setTexture = () => {
-                this.coat.texture = this.texture.getTexture();
+                this.coatTentacle.texture = this.textureTentacle.getTexture();
             };
             this.node = _node;
             let cmpMaterial = this.node.getComponent(ƒ.ComponentMaterial);
             this.coat = cmpMaterial.material.coat;
             this.tentacle = this.node.getChildByName("Tentacle");
+            cmpMaterial = this.tentacle.getComponent(ƒ.ComponentMaterial);
+            this.coatTentacle = new ƒ.CoatTextured(new ƒ.Color(), this.textureTentacle.getTexture());
+            this.tentacle.getComponent(ƒ.ComponentMaterial).material = new ƒ.Material("mtrTentacle", ƒ.ShaderLitTextured, this.coatTentacle);
+            this.grope(1);
         }
         moveTo(_position) {
             this.position = _position;
+            this.coat.texture = this.textureTentacle.getTexture();
         }
-        stretch(_to) {
-            this.tentacle.activate(_to != null);
-            if (!_to)
+        grope(_direction) {
+            let factor = 0.001;
+            let x = this.tentacle.mtxLocal.translation.x - _direction * factor;
+            if (_direction == 0) {
+                this.tentacle.mtxLocal.translation = ƒ.Vector3.ZERO();
                 return;
+            }
+            this.tentacle.mtxLocal.translation = ƒ.Vector3.X(Math.max(0, Math.min(0.7, x)));
+            this.tentacle.mtxLocal.scaling = new ƒ.Vector3(x * 1.2, 1, 1);
+        }
+        turn(_to) {
             let diff = ƒ.Vector2.DIFFERENCE(_to, this.position);
             let geo = diff.geo;
             if (geo.magnitude > 1.5)
-                return;
+                return false;
+            let current = this.node.mtxLocal.rotation.z;
+            if (Math.abs(current - geo.angle) < 10)
+                return false;
             this.node.mtxLocal.rotation = ƒ.Vector3.Z(geo.angle);
+            return true;
         }
         get position() {
             return this.node.mtxLocal.translation.toVector2();

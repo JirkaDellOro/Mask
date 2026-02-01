@@ -3,7 +3,6 @@ namespace Script {
 
   export class Tile extends ƒ.Node {
     private static mesh: ƒ.MeshQuad = new ƒ.MeshQuad("mshTile");
-    // private ptg: any;
     public texture: Texture;
 
     public constructor(_position: ƒ.Vector2) {

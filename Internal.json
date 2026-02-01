@@ -97,7 +97,7 @@
                         "ƒ.ComponentMesh": {
                           "idMesh": "MeshQuad|2026-01-31T10:31:19.345Z|92768",
                           "pivot": {
-                            "translation": "[0.7, 0, 0]",
+                            "translation": "[0, 0, 0]",
                             "rotation": "[0, 0, 0]",
                             "scaling": "[1, 0.10000000000000014, 1]"
                           },
@@ -122,6 +122,20 @@
                             "active": true
                           },
                           "idMaterial": "Material|2026-01-31T11:01:11.330Z|89266"
+                        }
+                      }
+                    ],
+                    "ComponentTransform": [
+                      {
+                        "ƒ.ComponentTransform": {
+                          "local": {
+                            "translation": "[0, 0, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
                         }
                       }
                     ]
