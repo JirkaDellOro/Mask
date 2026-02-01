@@ -32,6 +32,7 @@ namespace Script {
       let x: number = this.tentacle.mtxLocal.translation.x - _direction * factor;
       if (_direction == 0) {
         this.tentacle.mtxLocal.translation = ƒ.Vector3.ZERO();
+        this.tentacle.mtxLocal.scaling = new ƒ.Vector3(0, 1, 1);
         return
       }
 

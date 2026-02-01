@@ -204,6 +204,7 @@ var Script;
             let x = this.tentacle.mtxLocal.translation.x - _direction * factor;
             if (_direction == 0) {
                 this.tentacle.mtxLocal.translation = ƒ.Vector3.ZERO();
+                this.tentacle.mtxLocal.scaling = new ƒ.Vector3(0, 1, 1);
                 return;
             }
             this.tentacle.mtxLocal.translation = ƒ.Vector3.X(Math.max(0, Math.min(0.7, x)));
