@@ -11,6 +11,9 @@ declare namespace Script {
     import ƒ = FudgeCore;
     class Texture extends ƒ.Mutable {
         #private;
+        normTint: number;
+        normAmplitude: number;
+        normOctaves: number;
         tint: ƒ.Color;
         amplitude: number;
         octaves: number;
@@ -18,6 +21,9 @@ declare namespace Script {
         constructor();
         private setupGenerator;
         randomize(): void;
+        setNormTint(_value: number): void;
+        setNormAmplitude(_value: number): void;
+        setNormOctaves(_value: number): void;
         setTexture(_texture: Texture): void;
         getTexture(): ƒ.TextureCanvas;
         protected reduceMutator(_mutator: ƒ.Mutator): void;

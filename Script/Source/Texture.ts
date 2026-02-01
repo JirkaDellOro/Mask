@@ -6,6 +6,10 @@ namespace Script {
     #seed: number = ƒ.random.getNorm();
     #density: number;
     #persistence: number;
+    public normTint: number;
+    public normAmplitude: number;
+    public normOctaves: number;
+
     public tint: ƒ.Color;
     public amplitude: number;
     public octaves: number;
@@ -35,6 +39,19 @@ namespace Script {
       this.amplitude = ƒ.random.getRange(0.5, 2 - this.octaves / 4);
       this.#persistence = 1;//ƒ.random.getRange(0, 1);
       this.#density = 0.5;// ƒ.random.getNorm();
+    }
+
+    setNormTint(_value: number): void {
+      this.normTint = Math.min(0, Math.max(1, _value));
+      this.tint = ƒ.Color.CSS(`hsl(${this.normTint * 360}, 80%, 60%)`);
+    }
+    setNormAmplitude(_value: number): void {
+      this.normAmplitude = Math.min(0, Math.max(1, _value));
+      this.amplitude = 0.5 + _value * 6;
+    }
+    setNormOctaves(_value: number): void {
+      this.normOctaves = Math.min(0, Math.max(1, _value));
+      this.octaves = 1 + _value * 5;
     }
 
     public setTexture(_texture: Texture): void {

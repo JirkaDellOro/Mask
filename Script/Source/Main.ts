@@ -4,6 +4,7 @@ namespace Script {
   import ƒ = FudgeCore;
   // import ƒUi = FudgeUserInterface;
   declare const PTG: any;
+  declare const OctoTexture: any;
 
   type Tiles = { [index: string]: Tile };
 
@@ -14,8 +15,13 @@ namespace Script {
   export let graphTile: ƒ.Graph;
   const tiles: Tiles = {};
   export let octopus: Octopus;
+  let synth: any;
 
   function start(_event: CustomEvent): void {
+    const audioContext = new AudioContext();
+    synth = new OctoTexture(audioContext);
+    synth.start();
+
     viewport = _event.detail;
     graphTile = <ƒ.Graph>ƒ.Project.getResourcesByName("Tile")[0];
     viewport.camera.mtxPivot.translateZ(5);
@@ -61,14 +67,18 @@ namespace Script {
       case "tint":
         let tint: ƒ.Color = ƒ.Color.CSS(`hsl(${+target.value * 360}, 80%, 60%)`);
         octopus.textureTentacle.mutate({ tint: tint });
+        synth.setCurrentTint(+target.value);
         break;
       case "amplitude":
-        let amplitude: number = 0.5 + +target.value * 6;
+        let amplitude: number = 0.5 + +target.value * 4;
         octopus.textureTentacle.mutate({ amplitude: amplitude });
+        synth.setCurrentAmplitude(+target.value);
+        synth.setCurrentAmplitude(+target.value);
         break;
       case "octaves":
         let octaves: number = 1 + +target.value * 5;
         octopus.textureTentacle.mutate({ octaves: octaves });
+        synth.setCurrentOctaves(+target.value);
         break;
     }
     octopus.setTexture();

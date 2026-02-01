@@ -1,7 +1,7 @@
 /***********************************************************
  * Octo Synth
  */
-export default class OctoSynth {
+class OctoSynth {
   constructor(audioContext, numStrings = 8, pitch = 0.5, detune = 0.5, cutoff = 0.5, feedback = 0.5, volume = 0.5, tempo = 0.5, spread = 0.5) {
     this.audioContext = audioContext
     this.numStrings = numStrings;
@@ -27,14 +27,14 @@ export default class OctoSynth {
       const gain = audioContext.createGain();
       gain.connect(merger, 0, (i % 2 === 0));
 
-      const string = new KarplusStrong(audioContext, gain);
+      const string = new OctoKarplusStrong(audioContext, gain);
       this.strings.push(string);
 
       const detuneFactor = (2 * i / (numStrings - 1)) - 1;
       this.detuneFactors.push(detuneFactor);
     }
 
-    this.sequencer = new Sequencer(audioContext, 0.05);
+    this.sequencer = new OctoSequencer(audioContext, 0.05);
 
     this.normPitch = pitch;
     this.normDetune = detune;
@@ -140,7 +140,7 @@ export default class OctoSynth {
 /***********************************************************
  * Sequencer
  */
-class Sequencer {
+class OctoSequencer {
   constructor(audioContext, period) {
     this.audioContext = audioContext;
     this.period = period;
@@ -198,7 +198,7 @@ class Sequencer {
   }
 }
 
-class KarplusStrong {
+class OctoKarplusStrong {
   constructor(audioContext, output, pitch = 4500, feedback = -0.5, cutoff = 500) {
     this.audioContext = audioContext;
     this.output = output;

@@ -66,6 +66,18 @@ var Script;
             this.#persistence = 1; //ƒ.random.getRange(0, 1);
             this.#density = 0.5; // ƒ.random.getNorm();
         }
+        setNormTint(_value) {
+            this.normTint = Math.min(0, Math.max(1, _value));
+            this.tint = ƒ.Color.CSS(`hsl(${this.normTint * 360}, 80%, 60%)`);
+        }
+        setNormAmplitude(_value) {
+            this.normAmplitude = Math.min(0, Math.max(1, _value));
+            this.amplitude = 0.5 + _value * 6;
+        }
+        setNormOctaves(_value) {
+            this.normOctaves = Math.min(0, Math.max(1, _value));
+            this.octaves = 1 + _value * 5;
+        }
         setTexture(_texture) {
             this.tint = _texture.tint.clone;
             this.octaves = _texture.octaves;
@@ -125,7 +137,11 @@ var Script;
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
     const tiles = {};
+    let synth;
     function start(_event) {
+        const audioContext = new AudioContext();
+        synth = new OctoTexture(audioContext);
+        synth.start();
         viewport = _event.detail;
         Script.graphTile = ƒ.Project.getResourcesByName("Tile")[0];
         viewport.camera.mtxPivot.translateZ(5);
@@ -161,14 +177,18 @@ var Script;
             case "tint":
                 let tint = ƒ.Color.CSS(`hsl(${+target.value * 360}, 80%, 60%)`);
                 Script.octopus.textureTentacle.mutate({ tint: tint });
+                synth.setCurrentTint(+target.value);
                 break;
             case "amplitude":
-                let amplitude = 0.5 + +target.value * 6;
+                let amplitude = 0.5 + +target.value * 4;
                 Script.octopus.textureTentacle.mutate({ amplitude: amplitude });
+                synth.setCurrentAmplitude(+target.value);
+                synth.setCurrentAmplitude(+target.value);
                 break;
             case "octaves":
                 let octaves = 1 + +target.value * 5;
                 Script.octopus.textureTentacle.mutate({ octaves: octaves });
+                synth.setCurrentOctaves(+target.value);
                 break;
         }
         Script.octopus.setTexture();

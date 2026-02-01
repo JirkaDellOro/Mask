@@ -1,10 +1,8 @@
-import OctoSynth from './octo-synth.js';
-
 /***********************************************************
  * Octo Texture
  */
-export default class OctoTexture {
-  constructor(audioContext, tint = 0.5, amplitude = 0.5, octaves = 0.5, volume = 0.5) {
+class OctoTexture {
+  constructor(audioContext, tint = 0.5, amplitude = 0.5, octaves = 0.5, volume = 1) {
     this.audioContext = audioContext
 
     this.synth = new OctoSynth(audioContext, 8);
