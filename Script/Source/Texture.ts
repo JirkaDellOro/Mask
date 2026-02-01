@@ -37,6 +37,12 @@ namespace Script {
       this.#density = 0.5;// ƒ.random.getNorm();
     }
 
+    public setTexture(_texture: Texture): void {
+      this.tint = _texture.tint.clone;
+      this.octaves = _texture.octaves;
+      this.amplitude = _texture.amplitude;
+    }
+
     public getTexture(): ƒ.TextureCanvas {
       let data = {
         program: "cellularFractal",

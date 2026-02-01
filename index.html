@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <title>Mask</title>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="styles.css" />
 
   <!--Editor settings of this project-->
-  <meta type="settings" autoview="Graph|2026-01-31T10:31:11.864Z|35311" project="{'name':'Mask','graphAutoView':'Graph|2026-01-31T10:31:11.864Z|35311'}" />
+  <meta type="settings" autoview="Graph|2026-01-31T10:31:11.864Z|35311"
+    project="{'name':'Mask','graphAutoView':'Graph|2026-01-31T10:31:11.864Z|35311'}" />
 
   <!--Activate the following line to include the FUDGE-version of Oimo-Physics. You may want to download a local copy to work offline and be independent from future changes!-->
   <!--<script type="text/javascript" src="https://hs-furtwangen.github.io/FUDGE/Distribution/OimoPhysics.js"></script>-->
@@ -35,10 +37,18 @@
     <h1>Title (will be replaced by Autoview)</h1>
     <p>click to start</p>
   </dialog>
-  <!--Canvas for FUDGE to render to-->
+
   <canvas class="fullscreen"> </canvas>
-  <!-- <canvas id="texture" width="200" height="200">  </canvas> -->
-   <!-- <div id="vui">
-</div> -->
+
+  <div id="vui">
+    Color
+    <input type="range" name="tint" id="tint" min="0" max="1" step="0.05">
+    Brightness
+    <input type="range" name="amplitude" id="amplitude" min="0" max="1" step="0.05">
+    Texture
+    <input type="range" name="octaves" id="octaves" min="0" max="1" step="0.2">
+  </div>
+
 </body>
+
 </html>

@@ -2,7 +2,7 @@
 /// <reference path="Tile.ts"/>;
 namespace Script {
   import ƒ = FudgeCore;
-  import ƒUi = FudgeUserInterface;
+  // import ƒUi = FudgeUserInterface;
   declare const PTG: any;
 
   type Tiles = { [index: string]: Tile };
@@ -24,10 +24,13 @@ namespace Script {
     setupFloor();
     octopus = new Octopus(viewport.getBranch().getChildByName("Octopus"))
 
-    let domUI: HTMLDivElement = ƒUi.Generator.createInterfaceFromMutable(octopus.textureTentacle);
-    document.body.appendChild(domUI);
-    new ƒUi.Controller(octopus.textureTentacle, domUI);
-    octopus.textureTentacle.addEventListener(ƒ.EVENT.MUTATE, octopus.setTexture);
+    // let domUI: HTMLDivElement = ƒUi.Generator.createInterfaceFromMutable(octopus.textureTentacle);
+    // document.body.appendChild(domUI);
+    // new ƒUi.Controller(octopus.textureTentacle, domUI);
+    // octopus.textureTentacle.addEventListener(ƒ.EVENT.MUTATE, octopus.setTexture);
+
+    let domUI: HTMLDivElement = document.querySelector("div#vui");
+    domUI.addEventListener("input", hndInput);
 
     viewport.canvas.addEventListener("mousedown", hndMouse);
     viewport.canvas.addEventListener("wheel", hndMouse);
@@ -36,8 +39,11 @@ namespace Script {
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
 
     ƒ.Time.game.setTimer(1000, 1, () => {
-      octopus.texture.randomize();
-      octopus.setTexture();
+      let start: Texture = tiles[ƒ.Vector2.ZERO().toString()].texture;
+      octopus.coatTentacle.texture = start.getTexture();
+      octopus.coat.texture = start.getTexture();
+      octopus.textureTentacle.setTexture(start);
+      octopus.texture.setTexture(start);
     });
   }
 
@@ -46,6 +52,26 @@ namespace Script {
 
     viewport.draw();
     ƒ.AudioManager.default.update();
+  }
+
+  function hndInput(_event: Event): void {
+    let target: HTMLInputElement = (<HTMLInputElement>_event.target);
+
+    switch (target.id) {
+      case "tint":
+        let tint: ƒ.Color = ƒ.Color.CSS(`hsl(${+target.value * 360}, 80%, 60%)`);
+        octopus.textureTentacle.mutate({ tint: tint });
+        break;
+      case "amplitude":
+        let amplitude: number = 0.5 + +target.value * 6;
+        octopus.textureTentacle.mutate({ amplitude: amplitude });
+        break;
+      case "octaves":
+        let octaves: number = 1 + +target.value * 5;
+        octopus.textureTentacle.mutate({ octaves: octaves });
+        break;
+    }
+    octopus.setTexture();
   }
 
   function hndMouse(_event: MouseEvent | WheelEvent): void {

@@ -23,6 +23,14 @@ div {
   background-color: #ffffff80;
 }
 
+div#vui {
+  top:200px;
+}
+
+input[type="range"] {
+  display: block;
+}
+
 fudge-stepper {
   display: block;
 }

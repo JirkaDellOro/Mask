@@ -18,6 +18,7 @@ declare namespace Script {
         constructor();
         private setupGenerator;
         randomize(): void;
+        setTexture(_texture: Texture): void;
         getTexture(): ƒ.TextureCanvas;
         protected reduceMutator(_mutator: ƒ.Mutator): void;
     }

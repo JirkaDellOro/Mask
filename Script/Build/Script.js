@@ -66,6 +66,11 @@ var Script;
             this.#persistence = 1; //ƒ.random.getRange(0, 1);
             this.#density = 0.5; // ƒ.random.getNorm();
         }
+        setTexture(_texture) {
+            this.tint = _texture.tint.clone;
+            this.octaves = _texture.octaves;
+            this.amplitude = _texture.amplitude;
+        }
         getTexture() {
             let data = {
                 program: "cellularFractal",
@@ -117,7 +122,6 @@ var Script;
 /// <reference path="Tile.ts"/>;
 (function (Script) {
     var ƒ = FudgeCore;
-    var ƒUi = FudgeUserInterface;
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
     const tiles = {};
@@ -128,23 +132,46 @@ var Script;
         viewport.camera.mtxPivot.rotateY(180);
         setupFloor();
         Script.octopus = new Script.Octopus(viewport.getBranch().getChildByName("Octopus"));
-        let domUI = ƒUi.Generator.createInterfaceFromMutable(Script.octopus.textureTentacle);
-        document.body.appendChild(domUI);
-        new ƒUi.Controller(Script.octopus.textureTentacle, domUI);
-        Script.octopus.textureTentacle.addEventListener("mutate" /* ƒ.EVENT.MUTATE */, Script.octopus.setTexture);
+        // let domUI: HTMLDivElement = ƒUi.Generator.createInterfaceFromMutable(octopus.textureTentacle);
+        // document.body.appendChild(domUI);
+        // new ƒUi.Controller(octopus.textureTentacle, domUI);
+        // octopus.textureTentacle.addEventListener(ƒ.EVENT.MUTATE, octopus.setTexture);
+        let domUI = document.querySelector("div#vui");
+        domUI.addEventListener("input", hndInput);
         viewport.canvas.addEventListener("mousedown", hndMouse);
         viewport.canvas.addEventListener("wheel", hndMouse);
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
         ƒ.Time.game.setTimer(1000, 1, () => {
-            Script.octopus.texture.randomize();
-            Script.octopus.setTexture();
+            let start = tiles[ƒ.Vector2.ZERO().toString()].texture;
+            Script.octopus.coatTentacle.texture = start.getTexture();
+            Script.octopus.coat.texture = start.getTexture();
+            Script.octopus.textureTentacle.setTexture(start);
+            Script.octopus.texture.setTexture(start);
         });
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
+    }
+    function hndInput(_event) {
+        let target = _event.target;
+        switch (target.id) {
+            case "tint":
+                let tint = ƒ.Color.CSS(`hsl(${+target.value * 360}, 80%, 60%)`);
+                Script.octopus.textureTentacle.mutate({ tint: tint });
+                break;
+            case "amplitude":
+                let amplitude = 0.5 + +target.value * 6;
+                Script.octopus.textureTentacle.mutate({ amplitude: amplitude });
+                break;
+            case "octaves":
+                let octaves = 1 + +target.value * 5;
+                Script.octopus.textureTentacle.mutate({ octaves: octaves });
+                break;
+        }
+        Script.octopus.setTexture();
     }
     function hndMouse(_event) {
         let posClient = new ƒ.Vector2(_event.clientX, _event.clientY);
