@@ -115,8 +115,6 @@ var Script;
     var ƒUi = FudgeUserInterface;
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
-    let coatOctopus;
-    let txtOctopus = new Script.Texture();
     const tiles = {};
     function start(_event) {
         viewport = _event.detail;
@@ -125,17 +123,19 @@ var Script;
         viewport.camera.mtxPivot.rotateY(180);
         Script.ptg = setupGenerator();
         setupFloor();
-        setupOctopus();
-        let domUI = ƒUi.Generator.createInterfaceFromMutable(txtOctopus);
+        Script.octopus = new Script.Octopus(viewport.getBranch().getChildByName("Octopus"));
+        let domUI = ƒUi.Generator.createInterfaceFromMutable(Script.octopus.texture);
         document.body.appendChild(domUI);
-        new ƒUi.Controller(txtOctopus, domUI);
-        txtOctopus.addEventListener("mutate" /* ƒ.EVENT.MUTATE */, setTexture);
-        viewport.canvas.addEventListener("mousemove", hndMouseMove);
+        new ƒUi.Controller(Script.octopus.texture, domUI);
+        Script.octopus.texture.addEventListener("mutate" /* ƒ.EVENT.MUTATE */, Script.octopus.setTexture);
+        viewport.canvas.addEventListener("mousedown", hndMouse);
+        viewport.canvas.addEventListener("mouseup", hndMouse);
+        // viewport.canvas.addEventListener("wheel", hndMouseWheel);
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
         ƒ.Time.game.setTimer(1000, 1, () => {
-            txtOctopus.randomize();
-            setTexture();
+            Script.octopus.texture.randomize();
+            Script.octopus.setTexture();
         });
     }
     function update(_event) {
@@ -143,15 +143,21 @@ var Script;
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
-    function hndMouseMove(_event) {
-        let posClient = new ƒ.Vector2(_event.clientX, _event.clientY);
-        let ray = viewport.getRayFromClient(posClient);
-        let posWorld = ray.intersectPlane(ƒ.Vector3.ZERO(), ƒ.Vector3.Z());
-        let posGrid = new ƒ.Vector2(Math.round(posWorld.x), Math.round(posWorld.y));
-        console.log(posGrid);
-    }
-    function setTexture() {
-        coatOctopus.texture = txtOctopus.getTexture(Script.ptg);
+    function hndMouse(_event) {
+        switch (_event.type) {
+            case "mousedown":
+                let posClient = new ƒ.Vector2(_event.clientX, _event.clientY);
+                let ray = viewport.getRayFromClient(posClient);
+                let posWorld = ray.intersectPlane(ƒ.Vector3.ZERO(), ƒ.Vector3.Z());
+                let posGrid = new ƒ.Vector2(Math.round(posWorld.x), Math.round(posWorld.y));
+                let tile = tiles[posGrid.toString()];
+                console.log(tile.texture.tint, tile.texture.amplitude, tile.texture.octaves);
+                Script.octopus.stretch(posGrid);
+                break;
+            case "mouseup":
+                Script.octopus.stretch(null);
+                break;
+        }
     }
     function setupGenerator() {
         let canvas = document.createElement("canvas");
@@ -170,10 +176,39 @@ var Script;
             }
         console.log(tiles);
     }
-    function setupOctopus() {
-        let octopus = viewport.getBranch().getChildByName("Octopus");
-        let cmpMaterial = octopus.getComponent(ƒ.ComponentMaterial);
-        coatOctopus = cmpMaterial.material.coat;
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
+    class Octopus {
+        constructor(_node) {
+            this.texture = new Script.Texture();
+            this.setTexture = () => {
+                this.coat.texture = this.texture.getTexture(Script.ptg);
+            };
+            this.node = _node;
+            let cmpMaterial = this.node.getComponent(ƒ.ComponentMaterial);
+            this.coat = cmpMaterial.material.coat;
+        }
+        stretch(_to) {
+            if (!_to) {
+                this.node.getChildByName("Tentacle").activate(false);
+                return;
+            }
+            let diff = ƒ.Vector2.DIFFERENCE(_to, this.position);
+            let geo = diff.geo;
+            if (geo.magnitude > 1.5)
+                return;
+            this.node.mtxLocal.rotation = ƒ.Vector3.Z(geo.angle);
+            this.node.getChildByName("Tentacle").activate(true);
+        }
+        get position() {
+            return this.node.mtxLocal.translation.toVector2();
+        }
+        set position(_position) {
+            this.node.mtxLocal.translation = _position.toVector3();
+        }
     }
+    Script.Octopus = Octopus;
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
