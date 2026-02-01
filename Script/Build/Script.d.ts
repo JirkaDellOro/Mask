@@ -16,7 +16,7 @@ declare namespace Script {
         octaves: number;
         constructor();
         randomize(): void;
-        getTexture(): ƒ.TextureCanvas;
+        getTexture(_ptg: any): ƒ.TextureCanvas;
         protected reduceMutator(_mutator: ƒ.Mutator): void;
     }
 }
@@ -24,11 +24,14 @@ declare namespace Script {
     import ƒ = FudgeCore;
     class Tile extends ƒ.Node {
         private static mesh;
-        constructor();
+        private texture;
+        private ptg;
+        constructor(_position: ƒ.Vector2);
     }
 }
 declare namespace Script {
     import ƒ = FudgeCore;
     let ptg: any;
     let graphTile: ƒ.Graph;
+    function setupGenerator(): any;
 }

@@ -54,12 +54,12 @@ var Script;
         randomize() {
             this.tint = ƒ.Color.CSS(`hsl(${ƒ.random.getRangeFloored(0, 360)}, 80%, 60%)`);
             this.#seed = ƒ.random.getNorm();
-            this.#density = 0.5; // ƒ.random.getNorm();
-            this.amplitude = ƒ.random.getRange(0.5, 2);
+            this.octaves = ƒ.random.getRange(1, 4);
+            this.amplitude = ƒ.random.getRange(0.5, 2 - this.octaves / 4);
             this.#persistence = 1; //ƒ.random.getRange(0, 1);
-            this.octaves = ƒ.random.getRangeFloored(1, 5);
+            this.#density = 0.5; // ƒ.random.getNorm();
         }
-        getTexture() {
+        getTexture(_ptg) {
             let data = {
                 program: "cellularFractal",
                 blendMode: "add",
@@ -71,8 +71,13 @@ var Script;
                 octaves: this.octaves,
                 step: this.octaves
             };
-            Script.ptg.set([data]);
-            return new ƒ.TextureCanvas("test", Script.ptg.ctx);
+            _ptg.set([data]);
+            // let rim: number = 5;
+            // for (let a: number=0; a<rim; a++) {
+            //   _ptg.ctx.fillStyle = `rgba(255,255,255,${a/rim}`;
+            //   _ptg.ctx.fillRect(a,a,ptg.ctx.canvas.width-a, _ptg.ctx.canvas.height-a);
+            // }
+            return new ƒ.TextureCanvas("test", _ptg.ctx);
         }
         reduceMutator(_mutator) {
         }
@@ -82,17 +87,20 @@ var Script;
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
+    // declare const PTG: any;
     class Tile extends ƒ.Node {
         static { this.mesh = new ƒ.MeshQuad("mshTile"); }
-        constructor() {
+        constructor(_position) {
             super("Tile");
+            this.ptg = Script.setupGenerator();
             this.addComponent(new ƒ.ComponentMesh(Tile.mesh));
-            let texture = new Script.Texture();
-            texture.randomize();
-            console.log(texture);
-            let coat = new ƒ.CoatTextured(new ƒ.Color(), texture.getTexture());
+            this.texture = new Script.Texture();
+            this.texture.randomize();
+            let coat = new ƒ.CoatTextured(new ƒ.Color(), this.texture.getTexture(this.ptg));
             let material = new ƒ.Material("mtrTile", ƒ.ShaderLitTextured, coat);
             this.addComponent(new ƒ.ComponentMaterial(material));
+            this.addComponent(new ƒ.ComponentTransform);
+            this.mtxLocal.translate(_position.toVector3());
         }
     }
     Script.Tile = Tile;
@@ -105,28 +113,24 @@ var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     var ƒUi = FudgeUserInterface;
-    ƒ.Debug.info("Main Program Template running!");
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
     let coatOctopus;
     let txtOctopus = new Script.Texture();
+    const tiles = {};
     function start(_event) {
         viewport = _event.detail;
         Script.graphTile = ƒ.Project.getResourcesByName("Tile")[0];
-        let canvas = document.createElement("canvas");
-        canvas.width = 256;
-        canvas.height = 256;
-        Script.ptg = new PTG.ProceduralTextureGenerator(canvas);
-        let tile = new Script.Tile();
-        console.log(tile);
-        viewport.getBranch().addChild(tile);
-        let octopus = viewport.getBranch().getChildByName("Octopus");
-        let cmpMaterial = octopus.getComponent(ƒ.ComponentMaterial);
-        coatOctopus = cmpMaterial.material.coat;
+        viewport.camera.mtxPivot.translateZ(5);
+        viewport.camera.mtxPivot.rotateY(180);
+        Script.ptg = setupGenerator();
+        setupFloor();
+        setupOctopus();
         let domUI = ƒUi.Generator.createInterfaceFromMutable(txtOctopus);
         document.body.appendChild(domUI);
         new ƒUi.Controller(txtOctopus, domUI);
         txtOctopus.addEventListener("mutate" /* ƒ.EVENT.MUTATE */, setTexture);
+        viewport.canvas.addEventListener("mousemove", hndMouseMove);
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
         ƒ.Time.game.setTimer(1000, 1, () => {
@@ -139,8 +143,37 @@ var Script;
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
+    function hndMouseMove(_event) {
+        let posClient = new ƒ.Vector2(_event.clientX, _event.clientY);
+        let ray = viewport.getRayFromClient(posClient);
+        let posWorld = ray.intersectPlane(ƒ.Vector3.ZERO(), ƒ.Vector3.Z());
+        let posGrid = new ƒ.Vector2(Math.round(posWorld.x), Math.round(posWorld.y));
+        console.log(posGrid);
+    }
     function setTexture() {
-        coatOctopus.texture = txtOctopus.getTexture();
+        coatOctopus.texture = txtOctopus.getTexture(Script.ptg);
+    }
+    function setupGenerator() {
+        let canvas = document.createElement("canvas");
+        canvas.width = 256;
+        canvas.height = 256;
+        return new PTG.ProceduralTextureGenerator(canvas);
+    }
+    Script.setupGenerator = setupGenerator;
+    function setupFloor() {
+        for (let y = -2; y <= 2; y++)
+            for (let x = -2; x <= 2; x++) {
+                let posTile = new ƒ.Vector2(x, y);
+                let tile = new Script.Tile(posTile);
+                tiles[posTile.toString()] = tile;
+                viewport.getBranch().addChild(tile);
+            }
+        console.log(tiles);
+    }
+    function setupOctopus() {
+        let octopus = viewport.getBranch().getChildByName("Octopus");
+        let cmpMaterial = octopus.getComponent(ƒ.ComponentMaterial);
+        coatOctopus = cmpMaterial.material.coat;
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map

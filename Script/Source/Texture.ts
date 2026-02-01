@@ -21,13 +21,13 @@ namespace Script {
     public randomize(): void {
       this.tint = ƒ.Color.CSS(`hsl(${ƒ.random.getRangeFloored(0, 360)}, 80%, 60%)`);
       this.#seed = ƒ.random.getNorm();
-      this.#density = 0.5;// ƒ.random.getNorm();
-      this.amplitude = ƒ.random.getRange(0.5, 2);
+      this.octaves = ƒ.random.getRange(1, 4 );
+      this.amplitude = ƒ.random.getRange(0.5, 2 - this.octaves / 4);
       this.#persistence = 1;//ƒ.random.getRange(0, 1);
-      this.octaves = ƒ.random.getRangeFloored(1, 5);
+      this.#density = 0.5;// ƒ.random.getNorm();
     }
 
-    public getTexture(): ƒ.TextureCanvas {
+    public getTexture(_ptg: any): ƒ.TextureCanvas {
       let data = {
         program: "cellularFractal",
         blendMode: "add",
@@ -39,9 +39,15 @@ namespace Script {
         octaves: this.octaves,
         step: this.octaves
       }
-      ptg.set([data])
+      _ptg.set([data])
 
-      return new ƒ.TextureCanvas("test", ptg.ctx);
+      // let rim: number = 5;
+      // for (let a: number=0; a<rim; a++) {
+      //   _ptg.ctx.fillStyle = `rgba(255,255,255,${a/rim}`;
+      //   _ptg.ctx.fillRect(a,a,ptg.ctx.canvas.width-a, _ptg.ctx.canvas.height-a);
+      // }
+
+      return new ƒ.TextureCanvas("test", _ptg.ctx);
     }
 
     protected reduceMutator(_mutator: ƒ.Mutator): void {
