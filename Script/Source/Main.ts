@@ -18,21 +18,20 @@ namespace Script {
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
     graphTile = <ƒ.Graph>ƒ.Project.getResourcesByName("Tile")[0];
-    console.log(graphTile);
-
-    // viewport.getBranch().getChildByName("Tile");
-
-    let tile: Tile = new Tile();
+    
 
     let canvas: HTMLCanvasElement = document.createElement("canvas");
     canvas.width = 256;
     canvas.height = 256;
+    ptg = new PTG.ProceduralTextureGenerator(canvas);
+
+    let tile: Tile = new Tile();
+    console.log(tile);
+    viewport.getBranch().addChild(tile);
 
     let octopus: ƒ.Node = viewport.getBranch().getChildByName("Octopus");
     let cmpMaterial: ƒ.ComponentMaterial = octopus.getComponent(ƒ.ComponentMaterial);
     coatOctopus = <ƒ.CoatTextured>cmpMaterial.material.coat;
-
-    ptg = new PTG.ProceduralTextureGenerator(canvas);
 
     let domUI: HTMLDivElement = ƒUi.Generator.createInterfaceFromMutable(txtOctopus);
     document.body.appendChild(domUI);
@@ -57,6 +56,6 @@ namespace Script {
   }
 
   function setTexture(): void {
-    coatOctopus.texture = txtOctopus.getTexture()
+    coatOctopus.texture = txtOctopus.getTexture();
   }
 }

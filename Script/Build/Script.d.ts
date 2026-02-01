@@ -22,7 +22,8 @@ declare namespace Script {
 }
 declare namespace Script {
     import ƒ = FudgeCore;
-    class Tile extends ƒ.GraphInstance {
+    class Tile extends ƒ.Node {
+        private static mesh;
         constructor();
     }
 }

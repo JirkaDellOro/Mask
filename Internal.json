@@ -5,19 +5,6 @@
       "name": "Quad"
     }
   },
-  "Material|2026-01-31T10:32:00.473Z|39197": {
-    "ƒ.Material": {
-      "name": "ShaderLit",
-      "idResource": "Material|2026-01-31T10:32:00.473Z|39197",
-      "shader": "ShaderLit",
-      "coat": {
-        "ƒ.CoatColored": {
-          "alphaClip": 0.01,
-          "color": "[1, 1, 1, 1]"
-        }
-      }
-    }
-  },
   "Material|2026-01-31T11:01:11.330Z|89266": {
     "ƒ.Material": {
       "name": "ShaderLitTextured",
@@ -46,12 +33,6 @@
       "active": true,
       "components": {},
       "children": [
-        {
-          "ƒ.GraphInstance": {
-            "deserializeFromSource": true,
-            "idSource": "Graph|2026-01-31T21:14:21.454Z|36794"
-          }
-        },
         {
           "ƒ.Node": {
             "name": "Octopus",
@@ -148,6 +129,20 @@
                 "active": true
               },
               "idMaterial": "Material|2026-01-31T11:01:11.330Z|89266"
+            }
+          }
+        ],
+        "ComponentTransform": [
+          {
+            "ƒ.ComponentTransform": {
+              "local": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "Component": {
+                "active": true
+              }
             }
           }
         ]

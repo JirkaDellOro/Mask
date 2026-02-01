@@ -82,10 +82,17 @@ var Script;
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
-    class Tile extends ƒ.GraphInstance {
+    class Tile extends ƒ.Node {
+        static { this.mesh = new ƒ.MeshQuad("mshTile"); }
         constructor() {
-            super(Script.graphTile);
-            this.reset();
+            super("Tile");
+            this.addComponent(new ƒ.ComponentMesh(Tile.mesh));
+            let texture = new Script.Texture();
+            texture.randomize();
+            console.log(texture);
+            let coat = new ƒ.CoatTextured(new ƒ.Color(), texture.getTexture());
+            let material = new ƒ.Material("mtrTile", ƒ.ShaderLitTextured, coat);
+            this.addComponent(new ƒ.ComponentMaterial(material));
         }
     }
     Script.Tile = Tile;
@@ -106,16 +113,16 @@ var Script;
     function start(_event) {
         viewport = _event.detail;
         Script.graphTile = ƒ.Project.getResourcesByName("Tile")[0];
-        console.log(Script.graphTile);
-        // viewport.getBranch().getChildByName("Tile");
-        let tile = new Script.Tile();
         let canvas = document.createElement("canvas");
         canvas.width = 256;
         canvas.height = 256;
+        Script.ptg = new PTG.ProceduralTextureGenerator(canvas);
+        let tile = new Script.Tile();
+        console.log(tile);
+        viewport.getBranch().addChild(tile);
         let octopus = viewport.getBranch().getChildByName("Octopus");
         let cmpMaterial = octopus.getComponent(ƒ.ComponentMaterial);
         coatOctopus = cmpMaterial.material.coat;
-        Script.ptg = new PTG.ProceduralTextureGenerator(canvas);
         let domUI = ƒUi.Generator.createInterfaceFromMutable(txtOctopus);
         document.body.appendChild(domUI);
         new ƒUi.Controller(txtOctopus, domUI);
